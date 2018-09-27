@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  admin-client:
+    image: liumapp/admin-client:v4.1.0
+    restart: always
+    container_name: admin-client
+    hostname: admin-client
+    ports:
+      - "7373:7373"
+    volumes:
+      - ./log/:/spring-boot-admin-in-docker/log/
+  admin-server:
+    image: liumapp/admin-server:v4.1.0
+    restart: always
+    container_name: admin-server
+    hostname: admin-server
+    ports:
+      - "8766:8766"
+    volumes:
+      - ./log/:/spring-boot-admin-in-docker/log/
+  admin-eureka:
+    image: liumapp/admin-eureka:v4.1.0
+    restart: always
+    hostname: admin-eureka
+    container_name: admin-eureka
+    ports:
+      - '1234:1234'
+

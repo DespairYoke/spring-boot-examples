@@ -1,0 +1,49 @@
+logging:
+  file: "tmp/boot.log"
+
+management:
+  context-path: "/actuator"
+
+spring:
+  application:
+    name: "@pom.artifactId@"
+  boot:
+    admin:
+      url: http://localhost:8080
+  profiles:
+    active:
+      - secure
+
+---
+spring:
+  profiles: insecure
+
+management:
+  security:
+    enabled: false
+
+security:
+  basic:
+    enabled: false
+
+---
+spring:
+  profiles: secure
+  boot:
+    admin:
+      username: "${security.user.name}"
+      password: "${security.user.password}"
+      client:
+        metadata:
+          user.name: "${security.user.name}"
+          user.password:  "${security.user.password}"
+
+security:
+  user:
+    name: user
+    password: pass
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://sign-online-eureka:1234/eureka/
