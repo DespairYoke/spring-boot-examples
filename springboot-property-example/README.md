@@ -56,3 +56,22 @@ zwd..blog.test2=${random.int[10,20]}
     @Value("${zwd.blog.number}")
     private Integer number;
 ```
+## 配置文件的选择
+项目从开发到测试到生产，这些流程如果都使用同一个数据库的话，显然是不合理的；所以我们应该有多个配置文件供选择。
+`application-dev.properties`
+``` js
+server.port=8083
+```
+`application-test.properties`
+``` js
+server.port=8082
+```
+`application-prod.properties`
+``` js
+server.port=8081
+```
+这里我创建了三个配置文件做为演示，配置文件的内容如上,只是做了简单的启动端口替换。文件的选择是通过`applicaiton.properties`来控制，我具体代码如下：
+``` yml
+spring.profiles.active=test
+```
+想要切换为dev时，只需修改`test`为`dev`即可
