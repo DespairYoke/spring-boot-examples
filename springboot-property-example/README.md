@@ -56,5 +56,3 @@ zwd..blog.test2=${random.int[10,20]}
     @Value("${zwd.blog.number}")
     private Integer number;
 ```
-
-[项目地址]()
