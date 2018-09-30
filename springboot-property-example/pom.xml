@@ -1,88 +1,77 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+---
+layout: post
+title: springboot配置文件详解
+category: springboot
+tags: [springboot]
+---
+### 自定义属性与加载
 
-	<groupId>com.example.zwd</groupId>
-	<artifactId>springboot-property-example</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+``` xml
+zwd.name=zwd
+zwd.password=123456
+```
+然后通过`@Value("${属性名}")`注解来加载对应的配置属性，具体如下：
+``` java
+@Component
+public class UserProperties {
 
-	<name>property-example</name>
-	<description>Demo project for Spring Boot</description>
+    @Value("${zwd.name}")
+    private String username;
+    @Value("${zwd.password}")
+    private String password;
+    
+    //省略getter setter
+}
+```
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.17.BUILD-SNAPSHOT</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+### 参数间的引用
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-	</properties>
+在`在application.properties`中的各参数间也可以直接引用来使用，具体如下：
+``` YAML
+zwd.name=zwd
+zwd.password=123456
+zwd.content= name:${zwd.name},password:${zwd.password}
+```
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+### 使用随机数
+--------
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+``` YAML
+# 随机字符串
+zwd.blog.value=${random.value}
+# 随机int
+zwd.blog.number=${random.int}
+# 随机long
+zwd.blog.bignumber=${random.long}
+# 10以内的随机数
+zwd.blog.test1=${random.int(10)}
+# 10-20的随机数
+zwd..blog.test2=${random.int[10,20]}
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
-
-</project>
+```
+具体使用如下：
+``` java
+    @Value("${zwd.blog.value}")
+    private String isString;
+    @Value("${zwd.blog.number}")
+    private Integer number;
+```
+## 配置文件的选择
+项目从开发到测试到生产，这些流程如果都使用同一个数据库的话，显然是不合理的；所以我们应该有多个配置文件供选择。
+`application-dev.properties`
+``` js
+server.port=8083
+```
+`application-test.properties`
+``` js
+server.port=8082
+```
+`application-prod.properties`
+``` js
+server.port=8081
+```
+这里我创建了三个配置文件做为演示，配置文件的内容如上,只是做了简单的启动端口替换。文件的选择是通过`applicaiton.properties`来控制，我具体代码如下：
+``` yml
+spring.profiles.active=test
+```
+想要切换为dev时，只需修改`test`为`dev`即可
