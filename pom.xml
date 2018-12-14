@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.zwd.example.springboot</groupId>
+    <artifactId>spring-boot-examples</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>rabbitmq-example</module>
+        <module>springboot-websocket-demo</module>
+        <module>spring-boot-admin-in-docker</module>
+        <module>springboot-security-jwt</module>
+        <module>springboot-property-example</module>
+        <module>springboot-mybatis-pageHelper</module>
+        <module>springboot-jwt-demo</module>
+        <module></module>
+        <module>springboot-form-aop-demo</module>
+    </modules>
+</project>
