@@ -16,5 +16,6 @@
         <module>springboot-mybatis-pageHelper</module>
         <module>springboot-jwt-demo</module>
         <module>springboot-form-aop-demo</module>
+        <module>springboot-websocket</module>
     </modules>
 </project>

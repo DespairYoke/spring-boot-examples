@@ -73,7 +73,7 @@ public class DuplicateSubmitAspect {
     @AfterReturning("webLog() && @annotation(token)")
     public void doAfterReturning(JoinPoint joinPoint,DuplicateSubmitToken token) {
         // 处理完请求，返回内容
-        log.info("出来方法：");
+        .info("出来方法：");
         if (token!=null){
             Object[]args=joinPoint.getArgs();
             HttpServletRequest request=null;
