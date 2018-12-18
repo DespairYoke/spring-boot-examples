@@ -1,8 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.util.JwtHelper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author zwd
@@ -15,6 +20,11 @@ public class LoginController {
     @RequestMapping("/user/login")
     public String login() {
 
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("userid")
+
+        Claims claims = Jwts.claims();
+        claims.set
 
         String jwtToken = JwtHelper.createJWT("zzz",
                 "1",
