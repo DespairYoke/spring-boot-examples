@@ -6,6 +6,8 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,26 +22,14 @@ public class LoginController {
     @RequestMapping("/user/login")
     public String login() {
 
-        Map<String,Object> claims = new HashMap<>();
-        claims.put("userid")
+        String jwtToken = JwtHelper.generateToken("123",456);
 
-        Claims claims = Jwts.claims();
-        claims.set
-
-        String jwtToken = JwtHelper.createJWT("zzz",
-                "1",
-               "admin",
-                "098f6bcd4621d373cade4e832627b4f6",
-                "restapiuser",
-                1000,
-                "MDk4ZjZiY2Q0NjIxZDM3M2NhZGU0ZTgzMjYyN2I0ZjY=");
-
-        String result_str = "bearer;" + jwtToken;
-        return result_str;
+        return jwtToken;
     }
 
     @RequestMapping("user/hello")
     public String user(){
-        return "helloworld";
+
+        return   "hello";
     }
 }

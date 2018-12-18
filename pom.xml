@@ -15,7 +15,6 @@
         <module>springboot-property-example</module>
         <module>springboot-mybatis-pageHelper</module>
         <module>springboot-jwt-demo</module>
-        <module></module>
         <module>springboot-form-aop-demo</module>
     </modules>
 </project>
