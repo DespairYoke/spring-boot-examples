@@ -15,4 +15,9 @@ public class EmployeeController {
         return "Hello,World!";
     }
 
+    @GetMapping("/login")
+    public String login() {
+
+        return "login sucess";
+    }
 }

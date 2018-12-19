@@ -17,5 +17,6 @@
         <module>springboot-jwt-demo</module>
         <module>springboot-form-aop-demo</module>
         <module>springboot-websocket</module>
+        <module>springboot-outh2.0</module>
     </modules>
 </project>
