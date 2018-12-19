@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-功能：WebSocket使用示例
-作者：http://wallimn.iteye.com
- -->
 <html>
 <head>
     <meta charset="UTF-8">
@@ -11,12 +7,11 @@
         h3,h4{
             text-align:center;
         }
-    </style>git
+    </style>
 </head>
 <body>
 
 <h3>WebSocket测试，在<span style="color:red">控制台</span>查看测试信息输出！</h3>
-<h4>http://wallimn.iteye.com</h4>
 <h4>
     [url=/api/ws/sendOne?message=单发消息内容&id=none]单发消息链接[/url]
     [url=/api/ws/sendAll?message=群发消息内容]群发消息链接[/url]
@@ -35,7 +30,7 @@
         //注意ws、wss使用不同的端口。我使用自签名的证书测试，
         //无法使用wss，浏览器打开WebSocket时报错
         //ws对应http、wss对应https。
-        socket = new WebSocket("ws://localhost:80/ws/asset");
+        socket = new WebSocket("ws://localhost:8080/ws/asset");
         //连接打开事件
         socket.onopen = function() {
             console.log("Socket 已打开");

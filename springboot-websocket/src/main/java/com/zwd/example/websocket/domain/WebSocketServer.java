@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -19,6 +20,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class WebSocketServer {
 
+    @PostConstruct
+    public void init() {
+        System.out.println("websocket 加载");
+    }
     private static Logger log = LoggerFactory.getLogger(WebSocketServer.class);
     private static final AtomicInteger OnlineCount = new AtomicInteger(0);
     // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
@@ -103,7 +108,7 @@ public class WebSocketServer {
      * @param message
      * @throws IOException
      */
-    public static void SendMessage(String sessionId,String message) throws IOException {
+    public static void SendMessage(String message,String sessionId) throws IOException {
         Session session = null;
         for (Session s : SessionSet) {
             if(s.getId().equals(sessionId)){
