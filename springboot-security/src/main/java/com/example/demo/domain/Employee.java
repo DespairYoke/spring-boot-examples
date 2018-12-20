@@ -41,9 +41,4 @@ public class Employee {
         this.password = password;
     }
 
-    public Employee() {
-        this.setId("testId");
-        this.setUsername("testUsername");
-        this.setPassword("testPassword");
-    }
 }
