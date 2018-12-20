@@ -34,8 +34,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());//passwoldEncoder是对密码的加密处理，如果user中密码没有加密，则可以不加此方法。注意加密请使用security自带的加密方式。
+//        auth.userDetailsService(userDetailsService)
+//                .passwordEncoder(passwordEncoder());//passwoldEncoder是对密码的加密处理，如果user中密码没有加密，则可以不加此方法。注意加密请使用security自带的加密方式。
+        auth.inMemoryAuthentication()
+                .withUser("admin").password("123456").roles("ADMIN")
+                .and()
+                .withUser("employee").password("123456").roles("EMPLOYEE");
     }
 
     @Override
