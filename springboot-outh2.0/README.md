@@ -1,0 +1,2 @@
+http://localhost:8080/oauth/authorize?response_type=code&client_id=admin&redirect_uri=https://github.com/despairyoke?tab=repositories&scope=all
+http://localhost:8080/oauth/authorize?response_type=code&client_id=admin&redirect_uri=https://github.com/despairyoke?tab=repositories&scope=/api/example/hello
