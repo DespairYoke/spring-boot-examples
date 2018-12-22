@@ -3,7 +3,7 @@
 ## 基础教程
 ------------
 
-[springboot properties文件使用技巧](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-property-example)
+### [springboot properties文件使用技巧](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-property-example)
 
 ## 高级教程
 ----------
