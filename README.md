@@ -1,5 +1,12 @@
 ## SpringBoot
+-----
+## 基础教程
+------------
 
+[springboot properties文件使用技巧](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-property-example)
+
+## 高级教程
+----------
 ### [springboot2.0整合spring security outh2.0](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-outh2.0)
 
 
