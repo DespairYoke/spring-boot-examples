@@ -35,12 +35,12 @@ public class CustomAuthenticationServerConfig extends AuthorizationServerConfigu
 
     //用来配置客户端详情服务
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory().withClient("admin")
+        clients.inMemory().withClient("yunchongyin")
                 .secret(passwordEncoder.encode("123456"))
                 .accessTokenValiditySeconds(7200)
                 .authorizedGrantTypes("refresh_token", "password","authorization_code")
                 .redirectUris("https://github.com/despairyoke?tab=repositories")
-                .scopes("/api/example/hello");
+                .scopes("all");
     }
 
     //来配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)

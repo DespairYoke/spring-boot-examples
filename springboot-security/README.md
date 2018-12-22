@@ -1,121 +1,292 @@
-### springboot-security-jwt
-#### 传统的session认证
-    
-我们知道，http协议本身是一种无状态的协议，而这就意味着如果用户向我们的应用提供了用户名和密码来进行用户认证，那么下一次请求时，用户还要再一次进行用户认证才行，因为根据http协议，我们并不能知道是哪个用户发出的请求，所以为了让我们的应用能识别是哪个用户发出的请求，我们只能在服务器存储一份用户登录的信息，这份登录信息会在响应时传递给浏览器，告诉其保存为cookie,以便下次请求时发送给我们的应用，这样我们的应用就能识别请求来自哪个用户了,这就是传统的基于session认证。
+### spring security介绍
+Spring Security是一个功能强大且可高度自定义的身份验证和访问控制框架。它是保护基于Spring的应用程序的事实上的标准。
 
-但是这种基于session的认证使应用本身很难得到扩展，随着不同客户端用户的增加，独立的服务器已无法承载更多的用户，而这时候基于session认证应用的问题就会暴露出来.
+Spring Security是一个专注于为Java应用程序提供身份验证和授权的框架。与所有Spring项目一样，Spring Security的真正强大之处在于它可以轻松扩展以满足自定义要求。
+### 特征
+* 对身份验证和授权的全面和可扩展的支持
+* 防止会话固定，点击劫持，跨站点请求伪造等攻击
+* Servlet API集成
+* 可选与Spring Web MVC集成
+* Much more…
 
-##### 基于session认证所显露的问题
-Session: 每个用户经过我们的应用认证之后，我们的应用都要在服务端做一次记录，以方便用户下次请求的鉴别，通常而言session都是保存在内存中，而随着认证用户的增多，服务端的开销会明显增大。
 
-扩展性: 用户认证之后，服务端做认证记录，如果认证的记录被保存在内存中的话，这意味着用户下次请求还必须要请求在这台服务器上,这样才能拿到授权的资源，这样在分布式的应用上，相应的限制了负载均衡器的能力。这也意味着限制了应用的扩展能力。
+### 自定义User实例
+------------
+`思路流程` 用户来访问接口时，根据用户携带的Authorization去查询此用户的角色，再根据设置好的角色所具有的权限进行判断，如果访问的接口是该角色下的接口，则进行接口放行。
+![](https://upload-images.jianshu.io/upload_images/15204062-1243d257739d8faf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-CSRF: 因为是基于cookie来进行用户识别的, cookie如果被截获，用户就会很容易受到跨站请求伪造的攻击。
+#### 项目结构
+![](https://upload-images.jianshu.io/upload_images/15204062-4d858c1b8301e225.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+###  1、maven依赖
+----------
+```xml
+<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.8.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
 
-#### 基于token的鉴权机制
-基于token的鉴权机制类似于http协议也是无状态的，它不需要在服务端去保留用户的认证信息或者会话信息。这就意味着基于token认证机制的应用不需要去考虑用户在哪一台服务器登录了，这就为应用的扩展提供了便利。
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
 
-流程上是这样的：
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
-* 用户使用用户名密码来请求服务器
-* 服务器进行验证用户的信息
-* 服务器通过验证发送给用户一个token
-* 客户端存储token，并在每次请求时附送上这个token值
-* 服务端验证token值，并返回数据
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 
-这个token必须要在每次请求时传递给服务端，它应该保存在请求头里， 另外，服务端要支持CORS(跨来源资源共享)策略，一般我们在服务端这么做就可以了Access-Control-Allow-Origin: *。
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-actuator</artifactId>
+		</dependency>
 
-JWT长什么样？
-JWT是由三段信息构成的，将这三段信息文本用.链接一起就构成了Jwt字符串。就像这样:
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
-JWT的构成
-第一部分我们称它为头部（header),第二部分我们称其为载荷（payload, 类似于飞机上承载的物品)，第三部分是签证（signature).
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
 
-header
-jwt的头部承载两部分信息：
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.7.0</version>
+		</dependency>
 
-声明类型，这里是jwt
-声明加密的算法 通常直接使用 HMAC SHA256
-完整的头部就像下面这样的JSON：
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
+```
+#### 2、继承`WebSecurityConfigurerAdapter`配置角色权限
+-------------
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-{
-  'typ': 'JWT',
-  'alg': 'HS256'
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());//passwoldEncoder是对密码的加密处理，如果user中密码没有加密，则可以不加此方法。注意加密请使用security自带的加密方式。
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()//禁用了 csrf 功能
+                .authorizeRequests()//限定签名成功的请求
+                .antMatchers("/decision/**","/govern/**","/employee/*").hasAnyRole("EMPLOYEE","ADMIN")//对decision和govern 下的接口 需要 USER 或者 ADMIN 权限
+                .antMatchers("/employee/login").permitAll()///employee/login 不限定
+                .antMatchers("/admin/**").hasRole("ADMIN")//对admin下的接口 需要ADMIN权限
+                .antMatchers("/oauth/**").permitAll()//不拦截 oauth 开放的资源
+                .anyRequest().permitAll()//其他没有限定的请求，允许访问
+                .and().anonymous()//对于没有配置权限的其他请求允许匿名访问
+                .and().formLogin()//使用 spring security 默认登录页面
+                .and().httpBasic();//启用http 基础验证
+
+    }
+
 }
-然后将头部进行base64加密（该加密是可以对称解密的),构成了第一部分.
+```
+此处设置了两个角色：`admin`,`employee`;`admin`可以访问`"/decision/**","/govern/**","/employee/*","/admin/**"`，`employee`可以访问：`"/decision/**","/govern/**","/employee/*"`；从配置上看`admin`权限大于`employee`。
 
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
-playload
-载荷就是存放有效信息的地方。这个名字像是特指飞机上承载的货品，这些有效信息包含三个部分
 
-标准中注册的声明
-公共的声明
-私有的声明
-标准中注册的声明 (建议但不强制使用) ：
+#### 3、创建用户继承`UserDetailsService`
+------------
+```java
+@Service
+public class UserDetailServiceImpl implements UserDetailsService {
 
-iss: jwt签发者
-sub: jwt所面向的用户
-aud: 接收jwt的一方
-exp: jwt的过期时间，这个过期时间必须要大于签发时间
-nbf: 定义在什么时间之前，该jwt都是不可用的.
-iat: jwt的签发时间
-jti: jwt的唯一身份标识，主要用来作为一次性token,从而回避重放攻击。
-公共的声明 ：
-公共的声明可以添加任何的信息，一般添加用户的相关信息或其他业务需要的必要信息.但不建议添加敏感信息，因为该部分在客户端可解密.
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-私有的声明 ：
-私有声明是提供者和消费者所共同定义的声明，一般不建议存放敏感信息，因为base64是对称解密的，意味着该部分信息可以归类为明文信息。
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-定义一个payload:
+        //生成环境是查询数据库获取username的角色用于后续权限判断（如：张三 admin)
+        //这里不做数据库操作，给定假数据，有兴趣的人可以使内存模式。
+        if (username.equals("employee")) {
+            Employee employee = new Employee();
+            employee.setUsername("employee");
+            employee.setPassword("123456");
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_EMPLOYEE");
+            grantedAuthorities.add(grantedAuthority);
+            //创建一个用户，用于判断权限，请注意此用户名和方法参数中的username一致；BCryptPasswordEncoder是用来演示加密使用。
+            return new User(employee.getUsername(), new BCryptPasswordEncoder().encode(employee.getPassword()), grantedAuthorities);
+        }
+        if (username.equals("admin")) {
+            Admin admin = new Admin();
+            admin.setUsername("admin");
+            admin.setPassword("123456");
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
+            grantedAuthorities.add(grantedAuthority);
+            return new User(admin.getUsername(), new BCryptPasswordEncoder().encode(admin.getPassword()), grantedAuthorities);
+        }
+        else {
+            return null;
+        }
 
-{
-  "sub": "1234567890",
-  "name": "John Doe",
-  "admin": true
+
+    }
+}
+```
+此处为了方便，不连接数据库，使用假数据进行模拟，生成环境使用数据替代即可。
+
+#### 4、`employee`、`admin`实体创建
+```java
+public class Admin {
+
+    private String username;
+
+    private String password;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
 
-然后将其进行base64加密，得到Jwt的第二部分。
+public class Employee {
+    private String id;
+    private String username;
+    private String password;
 
-eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9
-signature
-jwt的第三部分是一个签证信息，这个签证信息由三部分组成：
 
-header (base64后的)
-payload (base64后的)
-secret
-这个部分需要base64加密后的header和base64加密后的payload使用.连接组成的字符串，然后通过header中声明的加密方式进行加盐secret组合加密，然后就构成了jwt的第三部分。
+    public String getId() {
+        return id;
+    }
 
-// javascript
-var encodedString = base64UrlEncode(header) + '.' + base64UrlEncode(payload);
+    public void setId(String id) {
+        this.id = id;
+    }
 
-var signature = HMACSHA256(encodedString, 'secret'); // TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
-将这三部分用.连接成一个完整的字符串,构成了最终的jwt:
+    public String getUsername() {
+        return username;
+    }
 
-  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
-注意：secret是保存在服务器端的，jwt的签发生成也是在服务器端的，secret就是用来进行jwt的签发和jwt的验证，所以，它就是你服务端的私钥，在任何场景都不应该流露出去。一旦客户端得知这个secret, 那就意味着客户端是可以自我签发jwt了。
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-如何应用
-一般是在请求头里加入Authorization，并加上Bearer标注：
+    public String getPassword() {
+        return password;
+    }
 
-fetch('api/user/1', {
-  headers: {
-    'Authorization': 'Bearer ' + token
-  }
-})
-服务端会验证token，如果验证通过就会返回相应的资源。整个流程就是这样的:
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-### 怎么使用？
+}
+```
+#### 5、测试controller层的代码编写
+```java
+@RestController
+@RequestMapping("/admin")
+public class AdminController {
 
-* 启动项目访问 localhost:8080/employee/greeting,就会出现如下:
 
-![Image text](https://github.com/love-mh-forever/jwt-demo/blob/master/img/1536139112248.jpg)
+    @GetMapping("/greeting")
+    public String greeting() {
+        return "Hello,World!";
+    }
 
-* 再访问 localhost:8080/login,请求信息如下
+    @GetMapping("/login")
+    public String login() {
 
-![Image text](https://github.com/love-mh-forever/jwt-demo/blob/master/img/1536139919870.jpg)
+        return "login sucess";
+    }
+}
 
-* 现在再次访问 localhost:8080/employee/greeting将会成功返回
+@RestController
+@RequestMapping("/employee")
+public class EmployeeController {
 
-### 加密方式请看测试用例
+
+    @GetMapping("/greeting")
+    public String greeting() {
+        return "Hello,World!";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+
+        return "login sucess";
+    }
+}
+```
+#### 最终效果
+
+* `员工访问员工接口`
+
+![](https://upload-images.jianshu.io/upload_images/15204062-c4ece24a7e1b9c43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* `员工访问管理员接口`
+
+![](https://upload-images.jianshu.io/upload_images/15204062-1899fb24adf2ac91.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* `管理员访问管理员接口`
+![](https://upload-images.jianshu.io/upload_images/15204062-85c6944c1902e293.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* `管理员访问员工接口`
+
+![](https://upload-images.jianshu.io/upload_images/15204062-4d92ec3ac458d3f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+### 基于内存的实例
+--------------
+基于内存，表示用户来源于内存；则放弃User使用`auth.inMemoryAuthentication()`
+在上述代码中进行更改即可
+```java
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService)
+//                .passwordEncoder(passwordEncoder());//passwoldEncoder是对密码的加密处理，如果user中密码没有加密，则可以不加此方法。注意加密请使用security自带的加密方式。
+        auth.inMemoryAuthentication()
+                .withUser("admin").password("123456").roles("ADMIN")
+                .and()
+                .withUser("employee").password("123456").roles("EMPLOYEE");
+    }
+```
+效果还是和上述相同，一般用来编写demo使用内存模式，生成环境不常使用
+### 基于数据库模式
+-------------
+`原理：`让spring security注入datasouce，再编写sql语句，让spring security内部执行sql进行权限判断，这里不做demo演示。
 

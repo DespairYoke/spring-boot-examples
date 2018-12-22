@@ -23,8 +23,8 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_EMPLOYEE");
         grantedAuthorities.add(grantedAuthority);
-        return new User("admin",new BCryptPasswordEncoder().encode("123456"),grantedAuthorities);
+        return new User("yunchongyin",new BCryptPasswordEncoder().encode("123456"),grantedAuthorities);
     }
 }
