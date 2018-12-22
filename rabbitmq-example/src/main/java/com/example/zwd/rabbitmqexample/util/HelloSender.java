@@ -35,7 +35,7 @@ public class HelloSender implements RabbitTemplate.ReturnCallback{
     }
     @Override
     public void returnedMessage(Message message, int i, String s, String s1, String s2) {
-        System.out.println("zzz");
+        System.out.println("server");
         logger.info("sender return success" + message.toString()+"==="+i+"==="+s1+"==="+s2);
     }
 }

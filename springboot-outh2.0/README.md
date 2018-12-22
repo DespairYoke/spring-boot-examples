@@ -32,6 +32,9 @@ OAuth就是为了解决上面这些问题而诞生的。
 
 项目地址: https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-outh2.0
 
+### 项目结构
+![image.png](https://upload-images.jianshu.io/upload_images/15204062-974f8520e4a3a36c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+## 基于内存演示授权码模式
 ### 这里假设localhost的问google
 **1、先登录我们google（localhost）设置好的google账号密码(localhost中的)**
 
@@ -51,6 +54,7 @@ OAuth就是为了解决上面这些问题而诞生的。
 ![](https://upload-images.jianshu.io/upload_images/15204062-4c43bb0bbb93ace2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 这时认证成功返回一个`access_token`
 -----------------
+
 **5、客户端拿到`access_token进行资源访问（google图片）访问`**
 ![image.png](https://upload-images.jianshu.io/upload_images/15204062-d9d806d86d876003.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -58,7 +62,6 @@ OAuth就是为了解决上面这些问题而诞生的。
 ![image.png](https://upload-images.jianshu.io/upload_images/15204062-bc09b8dbcc595c07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
-### 基于内存演示授权码模式
 -------
 #### 1、认证服务器搭建（AuthorizationServer）
 根据流程可知，云冲印携带自己提前申请好的`client_id`去访问google的服务器，这个服务器就是认证服务器，它会根据携带的`client_id`进行判断是否存在，如果存在则跳转到授权页面。下面我们模拟这个操作。
@@ -103,22 +106,6 @@ public class CustomAuthenticationServerConfig extends AuthorizationServerConfigu
 * authorizedGrantTypes：可接受的认证类型
 *  redirectUris：确认授权后的回调地址
 * scopes：表示申请的权限范围，可选项
-#### client_id过来时的权限判断
-虽然我们上面设置了`scopes`进行访问权限拦截，但在不被拦截的接口中，不同的用户也有着不同的权限，这些就都在`UserDetailService`的实现类中处理。
-```
-@Service
-public class MyUserDetailsService implements UserDetailsService {
-    @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
-        grantedAuthorities.add(grantedAuthority);
-        return new User("yunchongyin",new BCryptPasswordEncoder().encode("123456"),grantedAuthorities);
-    }
-}
-```
-
-此处是授权时，判断`client_id`是否存在。
 
 -------------------
 
@@ -131,6 +118,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         AuthenticationManager manager = super.authenticationManagerBean();
+        return manager;
+    }
+
+    //配置内存模式的用户
+    @Bean
+    @Override
+    protected UserDetailsService userDetailsService(){
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        manager.createUser(User.withUsername("employee").password(new BCryptPasswordEncoder().encode("123456")).authorities("USER").build());
+        manager.createUser(User.withUsername("employee1").password(new BCryptPasswordEncoder().encode("123456")).authorities("USER").build());
         return manager;
     }
 
@@ -147,10 +144,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable();
     }
 }
+
 ```
 `AuthenticationManager`,`BCryptPasswordEncoder`直接使用自带的类即可，不做深究。
 ------------------------
- http://localhost:8080/oauth/authorize?response_type=code&client_id=admin&redirect_uri=https://github.com/despairyoke?tab=repositories&scope=/api/example/hello
+ http://localhost:8080/oauth/authorize?response_type=code&client_id=yunchongyin&redirect_uri=https://github.com/despairyoke?tab=repositories&scope=/api/example/hello
 > 即携带client_id访问认证服务器
 > 参数介绍：
 > * response_type：表示授权类型，必选项，此处的值固定为"code"
@@ -175,7 +173,13 @@ public class CustomResourceServerConfig extends ResourceServerConfigurerAdapter 
 这里直接放行所有请求，不做介绍，详情请参照[springboot 集成spring security实现权限管理](https://www.jianshu.com/p/6a7dcef02bd5)。
  > `由于资源服务器安全问题，此处请求必须post`
 
+## 密码模式
+代码不需要更改
+![image.png](https://upload-images.jianshu.io/upload_images/15204062-20a24ff28d2d1527.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+## 流程介绍
+>  客户端直接携带密码和账号访问，除非客户端非常可靠，不然不建议使用
 
+![image.png](https://upload-images.jianshu.io/upload_images/15204062-5f3b737561582d00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 

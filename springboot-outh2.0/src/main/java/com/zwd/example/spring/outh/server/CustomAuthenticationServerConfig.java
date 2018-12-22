@@ -1,4 +1,4 @@
-package com.zwd.example.spring.outh.zzz;
+package com.zwd.example.spring.outh.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
