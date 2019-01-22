@@ -21,4 +21,4 @@
 
 ### [springboot2.0 集成swagger2](https://github.com/DespairYoke/spring-boot-examples/blob/master/swagger.md)
 
-### [springboot2.0 集成spring-data-jpa](https://github.com/DespairYoke/spring-boot-examples/blob/master/springvoot-jpa-example)
+### [springboot2.0 集成spring-data-jpa](https://github.com/DespairYoke/spring-boot-examples/tree/master/springvoot-jpa-example)
