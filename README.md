@@ -20,3 +20,5 @@
 ### [springboot2.0 集成rabbitmq实现队列DLQ](https://github.com/DespairYoke/spring-boot-examples/tree/master/rabbitmq-example)
 
 ### [springboot2.0 集成swagger2](https://github.com/DespairYoke/spring-boot-examples/blob/master/swagger.md)
+
+### [springboot2.0 集成spring-data-jpa](https://github.com/DespairYoke/spring-boot-examples/blob/master/springvoot-jpa-example)

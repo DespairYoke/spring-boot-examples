@@ -11,12 +11,14 @@
         <module>rabbitmq-example</module>
         <module>springboot-websocket-demo</module>
         <module>spring-boot-admin-in-docker</module>
-        <module>springboot-security-jwt</module>
+        <module>springboot-security</module>
         <module>springboot-property-example</module>
         <module>springboot-mybatis-pageHelper</module>
         <module>springboot-jwt-demo</module>
         <module>springboot-form-aop-demo</module>
         <module>springboot-websocket</module>
         <module>springboot-outh2.0</module>
+        <module>spring-boot-sample-xml</module>
+        <module>springboot-jpa-example</module>
     </modules>
 </project>
