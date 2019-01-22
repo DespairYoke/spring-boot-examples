@@ -2,7 +2,6 @@
 
 对于熟悉hibernate的人，都知道使用orm的好处，这里我用spring-data-jpa的原因是因为我发现在写测试demo的时候都需要进行建库建表等一系列流程操作，这些操作使本来很简单的一个demo变的复杂化，所以我引入spring-data-jpa的orm机制，并使用create-drop，这样就脱离了对数据库的操作。
 
-#### [项目地址](https://github.com/DespairYoke/spring-boot-examples/blob/master/springvoot-jpa-example)
 
 #### maven依赖
 ```xml
