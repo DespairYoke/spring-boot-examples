@@ -9,6 +9,8 @@
 
 - [springboot热部署实战](./hot.md)
 
+- [springboot实现多环境配置动态解析](./profile.md)
+
 ## 高级教程
 
 -  [springboot2.0整合spring security outh2.0](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-outh2.0)

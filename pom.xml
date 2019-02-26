@@ -23,6 +23,7 @@
         <module>spring-boot-redis</module>
         <module>spring-boot-swagger2</module>
         <module>spring-boot-hot</module>
+        <module>spring-boot-profiles</module>
     </modules>
     <dependencyManagement>
         <dependencies>
