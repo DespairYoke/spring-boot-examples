@@ -22,3 +22,5 @@
 ### [springboot2.0 集成swagger2](https://github.com/DespairYoke/spring-boot-examples/blob/master/swagger.md)
 
 ### [springboot2.0 集成spring-data-jpa](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-jpa-example)
+
+### [springboot2.0 集成mybatis配置多数据源](https://github.com/DespairYoke/java-advance/blob/master/spring-boot/mulidatasource.md)
