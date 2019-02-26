@@ -9,11 +9,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Email stephen.zwd@gmail.com
  */
 
-@SpringBootApplication
+//@SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class);
+
+        Runnable task = () -> {
+          String threadName = Thread.currentThread().getName();
+            System.out.println("Hello "+ threadName);
+        };
+        task.run();
+//        SpringApplication.run(Application.class);
     }
 
 }
