@@ -7,6 +7,8 @@
 
 - [springboot 集成redis](./redis.md)
 
+- [springboot热部署实战](./hot.md)
+
 ## 高级教程
 
 -  [springboot2.0整合spring security outh2.0](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-outh2.0)
@@ -21,7 +23,7 @@
 
 -  [springboot2.0 集成rabbitmq实现队列DLQ](https://github.com/DespairYoke/spring-boot-examples/tree/master/rabbitmq-example)
 
-- [springboot2.0 集成swagger2](https://github.com/DespairYoke/spring-boot-examples/blob/master/swagger.md)
+- [springboot2.0 集成swagger2](./swagger.md)
 
 - [springboot2.0 集成spring-data-jpa](https://github.com/DespairYoke/spring-boot-examples/tree/master/springboot-jpa-example)
 

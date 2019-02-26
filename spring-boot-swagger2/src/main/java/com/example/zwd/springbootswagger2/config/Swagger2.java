@@ -1,26 +1,15 @@
-## springboot整合swagger2
+package com.example.zwd.springbootswagger2.config;
 
-swagger是一个方便后端编写接口文档的开源项目，并提供界面化测试。
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-### 项目搭建
-
-- maven依赖
-```xml
-<!--swagger2-->
-<dependency>
-    <groupId>io.springfox</groupId>
-    <artifactId>springfox-swagger2</artifactId>
-    <version>2.8.0</version>
-</dependency>
-<dependency>
-    <groupId>io.springfox</groupId>
-    <artifactId>springfox-swagger-ui</artifactId>
-    <version>2.8.0</version>
-</dependency>
-```
-
-- 新建配置类
-````java
 @Configuration
 @EnableSwagger2
 public class Swagger2 {
@@ -54,34 +43,3 @@ public class Swagger2 {
                 .build();
     }
 }
-````
-
-- 新建测试controller类
-````java
-@RestController
-public class UserController {
-
-    @ApiOperation(value = "接口的功能介绍",notes = "提示接口使用者注意事项",httpMethod = "GET")
-    @ApiImplicitParam(dataType = "string",name = "name",value = "姓名",required = true)
-    @RequestMapping(value = "/")
-    public String index(String name) {
-
-        return "hello "+ name;
-    }
-}
-````
-启动项目[spring-boot-swagger2](./spring-boot-swagger2),访问 http://localhost:8080/swagger-ui.html 
-
-可以看到下图效果
-
-![](./image/swagger-home.png)
-
-展开接口内部
-
-![](./image/swagger-info.png)
-
-点击try it out 输入姓名， Execute执行，返回如下图效果
-
-![](./image/swagger-request.png)
-
-[项目地址](./spring-boot-swagger2)
